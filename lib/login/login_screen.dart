@@ -29,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var enteredUsername = '';
   var enteredPassword = '';
   var isSending = false;
+  var successfulRegistratioTemp = true;
 
   void login() async {
     if (formKey.currentState!.validate()) {
@@ -56,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.successfulRegistration) {
+    if (widget.successfulRegistration && successfulRegistratioTemp) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -64,6 +65,10 @@ class _LoginScreenState extends State<LoginScreen> {
             content: Text(widget.successMessage),
           ),
         );
+      });
+
+      setState(() {
+        successfulRegistratioTemp = false;
       });
     }
 
@@ -133,8 +138,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
                     },
                     icon: showPassword
-                        ? Icon(Icons.visibility)
-                        : Icon(Icons.visibility_off),
+                        ? Icon(Icons.visibility_off)
+                        : Icon(Icons.visibility),
                   ),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(

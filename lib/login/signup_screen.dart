@@ -126,8 +126,8 @@ class _SignupScreenState extends State<SignupScreen> {
                       });
                     },
                     icon: showPassword
-                        ? Icon(Icons.visibility)
-                        : Icon(Icons.visibility_off),
+                        ? Icon(Icons.visibility_off)
+                        : Icon(Icons.visibility),
                   ),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(

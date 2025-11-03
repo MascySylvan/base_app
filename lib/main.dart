@@ -36,6 +36,8 @@ class _MyAppState extends State<MyApp> {
       } else {
         themeMode = ThemeMode.light;
       }
+      
+      successfulRegistration = false;
     });
   }
 
