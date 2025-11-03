@@ -1,4 +1,7 @@
+import 'package:base_app/home/home_screen.dart';
 import 'package:base_app/login/login_screen.dart';
+import 'package:base_app/login/signup_screen.dart';
+import 'package:base_app/model/base_app_user.dart';
 import 'package:flutter/material.dart';
 
 Color defaultColor = Colors.red;
@@ -21,6 +24,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ThemeMode themeMode = ThemeMode.light;
+  BaseAppUser? loginUser;
+  String successMessage = '';
+  var isNewUser = false;
+  var successfulRegistration = false;
 
   void switchTheme() {
     setState(() {
@@ -32,8 +39,66 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void logout() {
+    setState(() {
+      loginUser = null;
+      successfulRegistration = false;
+    });
+  }
+
+  void goToHome(BaseAppUser currentUser) {
+    setState(() {
+      loginUser = currentUser;
+    });
+  }
+
+  void goToRegister() {
+    setState(() {
+      isNewUser = true;
+    });
+  }
+
+  void cancelRegister() {
+    setState(() {
+      isNewUser = false;
+      successfulRegistration = false;
+    });
+  }
+
+  void successRegister(String message) {
+    setState(() {
+      successMessage = message;
+      isNewUser = false;
+      successfulRegistration = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget content = LoginScreen(
+      switchTheme,
+      successfulRegistration,
+      successMessage,
+      goToHome: goToHome,
+      goToRegister: goToRegister,
+    );
+
+    if (loginUser != null) {
+      content = HomeScreen(
+        switchTheme,
+        currentUser: loginUser!,
+        logout: logout,
+      );
+    } else if (isNewUser) {
+      content = SignupScreen(
+        switchTheme,
+        successRegister: (String message) {
+          successRegister(message);
+        },
+        cancelRegister: cancelRegister,
+      );
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark().copyWith(
@@ -113,7 +178,7 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       themeMode: themeMode,
-      home: LoginScreen(switchTheme),
+      home: content,
     );
   }
 }

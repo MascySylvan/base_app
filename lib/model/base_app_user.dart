@@ -3,14 +3,13 @@ import 'package:uuid/uuid.dart';
 const uid = Uuid();
 
 class BaseAppUser {
-  
   BaseAppUser({
     required this.username,
     required this.password,
     required this.firstName,
     required this.lastName,
-  })  : uuid = uid.v4(),
-        createdDate = DateTime.now().toIso8601String();
+  }) : uuid = uid.v4(),
+       createdDate = DateTime.now().toIso8601String();
 
   BaseAppUser.fromData({
     required this.uuid,

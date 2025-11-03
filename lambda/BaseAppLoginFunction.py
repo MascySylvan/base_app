@@ -2,70 +2,63 @@ import json
 import boto3
 from boto3.dynamodb.conditions import Attr
 
+
 def lambda_handler(event, context):
-    dynamodb = boto3.resource('dynamodb')
-    table_name = "base_app_users"
-    table = dynamodb.Table(table_name)
+    dynamodb = boto3.resource("dynamodb")
+    table = dynamodb.Table("base_app_users")
 
-    # Extract query parameters from URL
-    params = event.get('queryStringParameters')
+    # Common CORS headers for API Gateway
+    headers = {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST",
+    }
 
-    if not params:
+    # Extract query parameters
+    params = event.get("queryStringParameters") or {}
+    username = params.get("username")
+    password = params.get("password")
+
+    if not username or not password:
         return {
-            'statusCode': 400,
-        'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-        },
-            'body': json.dumps({'message': 'No query parameters provided'})
+            "statusCode": 400,
+            "headers": headers,
+            "body": json.dumps(
+                {"message": "Missing 'username' or 'password' in query parameters"}
+            ),
         }
-
-    # Build the filter expression dynamically
-    filter_expression = None
-    for key, value in params.items():
-        condition = Attr(key).eq(value)
-        if filter_expression is None:
-            filter_expression = condition
-        else:
-            filter_expression = filter_expression & condition
 
     try:
-        # Scan the DynamoDB table with filters
+        # Scan instead of query
         response = table.scan(
-            FilterExpression=filter_expression,
-            Limit=1  # Only need the first match
+            FilterExpression=Attr("username").eq(username)
+            & Attr("password").eq(password)
         )
 
-        items = response.get('Items', [])
-        if not items:
+        items = response.get("Items", [])
+
+        if items:
             return {
-                'statusCode': 404,
-        'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-        },
-                'body': json.dumps({'message': 'Account with entered credentials does not exist.'})
+                "statusCode": 200,
+                "headers": headers,
+                "body": json.dumps(
+                    {
+                        "message": "User found",
+                        "data": items[0],  # return the first match
+                    }
+                ),
+            }
+        else:
+            return {
+                "statusCode": 404,
+                "headers": headers,
+                "body": json.dumps({"message": "Invalid username or password"}),
             }
 
-        return {
-            'statusCode': 200,
-        'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-        },
-            'body': json.dumps(items[0])
-        }
-
     except Exception as e:
+        print("Error:", e)
         return {
-            'statusCode': 500,
-        'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-        },
-            'body': json.dumps({'message': str(e)})
+            "statusCode": 500,
+            "headers": headers,
+            "body": json.dumps({"message": str(e)}),
         }
