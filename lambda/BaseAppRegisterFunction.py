@@ -11,7 +11,7 @@ def lambda_handler(event, context):
     headers = {
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS,POST",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
     }
 
     try:
@@ -36,6 +36,7 @@ def lambda_handler(event, context):
 
         username = body["username"]
 
+        # ✅ Fix: Use expression attribute names to avoid reserved keyword issues
         existing_user = table.scan(
             FilterExpression=Attr("username").eq(username),
             ProjectionExpression="#u",

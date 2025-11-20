@@ -1,17 +1,24 @@
 import 'dart:convert';
+import 'package:base_app/model/base_app_parameter.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:base_app/model/base_app_inventory_item.dart';
 
 var apiUrl = '17bckriqx0.execute-api.ap-southeast-2.amazonaws.com';
 var stage = '/prod';
 var systemId = 'BASE_APP';
 
-class InventoryService {
-  Future<List<BaseAppInventoryItem>?> getInventory({
+class ParameterService {
+  Future<List<BaseAppParameter>?> getParameters({
     required BuildContext context,
+    required String paramClass
   }) async {
-    final url = Uri.https(apiUrl, '$stage/inventory');
+    final url = Uri.https(
+      apiUrl,
+      '$stage/params',
+      {
+        'paramClass': paramClass,
+      },
+    );
 
     final response = await http.get(
       url,
@@ -34,7 +41,7 @@ class InventoryService {
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text(
-            'Failed to fetch Inventory.',
+            'Failed to fetch Parameters.',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -61,26 +68,24 @@ class InventoryService {
 
     final List<dynamic> jsonList = json.decode(response.body);
 
-    return jsonList.map((item) => BaseAppInventoryItem.fromJson(item)).toList();
+    return jsonList.map((item) => BaseAppParameter.fromJson(item)).toList();
   }
 
-  Future<String?> save({
+  Future<BaseAppParameter?> saveParameter({
     required BuildContext context,
-    required String itemName,
-    required int quantity,
-    required double unitPrice,
-    required String category,
+    required String paramClass,
+    required String paramName,
+    required String paramColor,
   }) async {
     final uri = Uri.https(
       apiUrl,
-      '$stage/inventory',
+      '$stage/params',
     );
 
-    BaseAppInventoryItem newSupply = BaseAppInventoryItem(
-      itemName: itemName,
-      quantity: quantity,
-      unitPrice: unitPrice,
-      category: category,
+    BaseAppParameter newUser = BaseAppParameter(
+      paramClass: paramClass,
+      paramName: paramName,
+      paramColor: paramColor,
     );
 
     final response = await http.post(
@@ -89,7 +94,7 @@ class InventoryService {
         'Content-Type': 'application/json',
         'system-id': systemId,
       },
-      body: json.encode(newSupply.toJson()),
+      body: json.encode(newUser.toJson()),
     );
 
     if (!context.mounted) {
@@ -105,7 +110,7 @@ class InventoryService {
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text(
-            'Supply failed to register.',
+            'Parameter failed to save.',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -130,6 +135,6 @@ class InventoryService {
       return null;
     }
 
-    return responseBody!['message'];
+    return newUser;
   }
 }

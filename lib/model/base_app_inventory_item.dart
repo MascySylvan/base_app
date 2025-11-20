@@ -1,3 +1,4 @@
+import 'package:base_app/model/base_app_parameter.dart';
 import 'package:uuid/uuid.dart';
 
 const uid = Uuid();
@@ -47,5 +48,36 @@ class BaseAppInventoryItem {
       'category': category,
       'createdDate': createdDate,
     };
+  }
+
+  double get totalPrice {
+    return unitPrice * quantity;
+  }
+}
+
+class BaseAppInventoryBucket {
+  const BaseAppInventoryBucket({
+    required this.category,
+    required this.inventoryList,
+  });
+
+  final BaseAppParameter category;
+  final List<BaseAppInventoryItem> inventoryList;
+
+  BaseAppInventoryBucket.forCategory(
+    List<BaseAppInventoryItem> allInventory,
+    this.category,
+  ) : inventoryList = allInventory
+          .where((inventory) => inventory.category == category.uuid)
+          .toList();
+
+  int get totalQty {
+    int sum = 0;
+
+    for (final inventory in inventoryList) {
+      sum += inventory.quantity;
+    }
+
+    return sum;
   }
 }

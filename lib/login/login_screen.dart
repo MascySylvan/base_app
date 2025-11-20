@@ -74,14 +74,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: widget.switchTheme,
-            icon: Icon(Icons.brightness_6),
-          ),
-        ],
+        leading: IconButton(
+          onPressed: widget.switchTheme,
+          icon: Icon(Icons.brightness_6),
+        ),
       ),
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Padding(
         padding: EdgeInsets.all(75),
         child: Form(

@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
       } else {
         themeMode = ThemeMode.light;
       }
-      
+
       successfulRegistration = false;
     });
   }
@@ -105,6 +105,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark().copyWith(
         colorScheme: kDarkColorScheme,
+        scaffoldBackgroundColor: kDarkColorScheme.primaryContainer,
         appBarTheme: AppBarTheme().copyWith(
           backgroundColor: kDarkColorScheme.primaryContainer,
           foregroundColor: kDarkColorScheme.onPrimaryContainer,
@@ -143,6 +144,7 @@ class _MyAppState extends State<MyApp> {
       ),
       theme: ThemeData().copyWith(
         colorScheme: kColorScheme,
+        scaffoldBackgroundColor: kColorScheme.primaryContainer,
         appBarTheme: AppBarTheme().copyWith(
           backgroundColor: kColorScheme.primaryContainer,
           foregroundColor: kColorScheme.onPrimaryContainer,
