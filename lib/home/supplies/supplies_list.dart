@@ -19,7 +19,7 @@ class SuppliesList extends StatelessWidget {
       itemCount: inventoryList.length,
       itemBuilder: (ctx, index) => Dismissible(
         background: Container(
-          color: Theme.of(context).colorScheme.error.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.error.withValues(alpha: 0.2),
           margin: Theme.of(context).cardTheme.margin,
         ),
         key: ValueKey(inventoryList[index]),

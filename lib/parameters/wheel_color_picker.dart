@@ -57,7 +57,7 @@ class _WheelColorPickerState extends State<WheelColorPicker> {
     setState(() => selectedColor = color);
 
     widget.onColorSelected(
-      color.value.toRadixString(16).toUpperCase(), // return string
+      color.toARGB32().toRadixString(16).toUpperCase(), // return string
     );
   }
 
