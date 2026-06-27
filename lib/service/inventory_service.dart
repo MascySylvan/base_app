@@ -2,22 +2,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:base_app/model/base_app_inventory_item.dart';
-
-var apiUrl = '17bckriqx0.execute-api.ap-southeast-2.amazonaws.com';
-var stage = '/prod';
-var systemId = 'BASE_APP';
+import 'package:base_app/config/app_config.dart';
 
 class InventoryService {
   Future<List<BaseAppInventoryItem>?> getInventory({
     required BuildContext context,
   }) async {
-    final url = Uri.https(apiUrl, '$stage/inventory');
+    final url = Uri.https(AppConfig.apiUrl, '${AppConfig.stage}/inventory');
 
     final response = await http.get(
       url,
       headers: {
         "Content-Type": "application/json",
-        "system-id": systemId,
+        "system-id": AppConfig.systemId,
       },
     );
 
@@ -72,8 +69,8 @@ class InventoryService {
     required String category,
   }) async {
     final uri = Uri.https(
-      apiUrl,
-      '$stage/inventory',
+      AppConfig.apiUrl,
+      '${AppConfig.stage}/inventory',
     );
 
     BaseAppInventoryItem newSupply = BaseAppInventoryItem(
@@ -87,7 +84,7 @@ class InventoryService {
       uri,
       headers: {
         'Content-Type': 'application/json',
-        'system-id': systemId,
+        'system-id': AppConfig.systemId,
       },
       body: json.encode(newSupply.toJson()),
     );

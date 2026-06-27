@@ -1,11 +1,9 @@
 import 'dart:convert';
 
 import 'package:base_app/model/base_app_user.dart';
+import 'package:base_app/config/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-var apiUrl = '17bckriqx0.execute-api.ap-southeast-2.amazonaws.com';
-var stage = '/prod';
 
 class LoginService {
   Future<BaseAppUser?> loginRequest({
@@ -14,8 +12,8 @@ class LoginService {
     required String password,
   }) async {
     final uri = Uri.https(
-      apiUrl,
-      '$stage/login',
+      AppConfig.apiUrl,
+      '${AppConfig.stage}/login',
       {
         'username': username.trim(),
         'password': password.trim(),
@@ -74,8 +72,8 @@ class LoginService {
     required String lastName,
   }) async {
     final uri = Uri.https(
-      apiUrl,
-      '$stage/register',
+      AppConfig.apiUrl,
+      '${AppConfig.stage}/register',
     );
 
     BaseAppUser newUser = BaseAppUser(

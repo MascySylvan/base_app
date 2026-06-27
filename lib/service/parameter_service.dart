@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'package:base_app/model/base_app_parameter.dart';
+import 'package:base_app/config/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-var apiUrl = '17bckriqx0.execute-api.ap-southeast-2.amazonaws.com';
-var stage = '/prod';
-var systemId = 'BASE_APP';
 
 class ParameterService {
   Future<List<BaseAppParameter>?> getParameters({
@@ -13,8 +10,8 @@ class ParameterService {
     required String paramClass
   }) async {
     final url = Uri.https(
-      apiUrl,
-      '$stage/params',
+      AppConfig.apiUrl,
+      '${AppConfig.stage}/params',
       {
         'paramClass': paramClass,
       },
@@ -24,7 +21,7 @@ class ParameterService {
       url,
       headers: {
         "Content-Type": "application/json",
-        "system-id": systemId,
+        "system-id": AppConfig.systemId,
       },
     );
 
@@ -78,8 +75,8 @@ class ParameterService {
     required String paramColor,
   }) async {
     final uri = Uri.https(
-      apiUrl,
-      '$stage/params',
+      AppConfig.apiUrl,
+      '${AppConfig.stage}/params',
     );
 
     BaseAppParameter newUser = BaseAppParameter(
@@ -92,7 +89,7 @@ class ParameterService {
       uri,
       headers: {
         'Content-Type': 'application/json',
-        'system-id': systemId,
+        'system-id': AppConfig.systemId,
       },
       body: json.encode(newUser.toJson()),
     );
